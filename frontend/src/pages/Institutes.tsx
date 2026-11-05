@@ -1,5 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useEffect, useState } from 'react';
 
 import { Link } from 'react-router-dom';
 import { institutesApi, searchApi } from '../api/client';
@@ -91,15 +90,6 @@ export function Institutes() {
   }, [page]);
 
   const data = allItems;
-
-  const parentRef = useRef<HTMLDivElement>(null);
-  const rowVirtualizer = useVirtualizer({
-    count: Math.ceil(data.length / 2),
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 180,
-    overscan: 5,
-    lanes: 2,
-  });
 
   const updateFilter = (key: string, val: string) => {
     setFilters((f) => ({ ...f, [key]: val }));
@@ -269,25 +259,10 @@ export function Institutes() {
           ))}
         </div>
       ) : (
-        <div ref={parentRef} className="h-[70vh] overflow-auto border border-[var(--color-border)] rounded-xl">
-          <div style={{ height: rowVirtualizer.getTotalSize(), width: '100%', position: 'relative' }}>
-            {rowVirtualizer.getVirtualItems().map((vi) => {
-              const inst = data[vi.index * 2 + vi.lane];
-              if (!inst) return null;
-              return (
-                <div
-                  key={inst.eiin_or_code}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: `${vi.lane * 50}%`,
-                    width: '50%',
-                    height: `${vi.size}px`,
-                    transform: `translateY(${vi.start}px)`,
-                    padding: 8,
-                  }}
-                >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {data.map((inst: any) => (
             <div
+              key={inst.eiin_or_code}
               className={`group card p-5 relative transition-all ${compareSet.has(inst.eiin_or_code) ? 'border-emerald-500 ring-2 ring-emerald-200' : ''}`}
             >
               <Link to={`/institutes/${inst.eiin_or_code}`} className="block">
@@ -352,12 +327,9 @@ export function Institutes() {
                 </button>
               </div>
             </div>
-          </div>
-          );
-        })}
-      </div>
-    </div>
-  )}
+          ))}
+        </div>
+      )}
 
       {/* Load more */}
       {hasMore && (

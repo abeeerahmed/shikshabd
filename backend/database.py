@@ -1,7 +1,7 @@
 import sqlite3, os
 
 import os
-DB_PATH = os.environ.get("DB_PATH", r"C:\Users\User\bd_education.db")
+DB_PATH = os.environ.get("DB_PATH", os.path.join(os.path.dirname(__file__), "bd_education.db"))
 
 def get_conn():
     conn = sqlite3.connect(DB_PATH, timeout=30)
