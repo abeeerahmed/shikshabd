@@ -28,6 +28,7 @@
     "bd-instituition-list-by-solutya": "^1.2.0",
     "framer-motion": "^14.9.1",
     "leaflet": "^1.9.4",
+    "leaflet.heat": "^1.0.0",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^1.68.0",
     "react": "^19.3.1",

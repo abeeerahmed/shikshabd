@@ -113,6 +113,10 @@ export function Stats() {
     queryKey: ['stats', 'teacher-designations'],
     queryFn: () => statsApi.teacherDesignations().then((r) => r.data),
   });
+  const { data: districtStats = [] } = useQuery({
+    queryKey: ['stats', 'districts'],
+    queryFn: () => statsApi.districts().then((r) => r.data),
+  });
 
   return (
     <div className="space-y-8">
@@ -170,6 +174,35 @@ export function Stats() {
           <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Top Teacher Designations</h2>
           {loading ? <ChartSkeleton /> : <HBarChart data={teacherDesignations} labelKey="designation" color="#d97706" />}
         </div>
+      </div>
+
+      {/* District Dashboard */}
+      <div className="card p-6">
+        <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">District Dashboard (All 64 Districts)</h2>
+        {loading ? <ChartSkeleton /> : (
+          <div className="overflow-x-auto max-h-96">
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-[var(--color-surface)]">
+                <tr className="border-b border-[var(--color-border)] text-left text-[var(--color-muted)]">
+                  <th className="py-2 px-3">#</th>
+                  <th className="py-2 px-3">District</th>
+                  <th className="py-2 px-3 text-right">Institutes</th>
+                  <th className="py-2 px-3 text-right">Teachers</th>
+                </tr>
+              </thead>
+              <tbody>
+                {districtStats.map((d: any, i: number) => (
+                  <tr key={d.district} className="border-b border-[var(--color-border)] hover:bg-[var(--color-border)]/20">
+                    <td className="py-2 px-3 text-[var(--color-muted)]">{i + 1}</td>
+                    <td className="py-2 px-3 font-medium text-[var(--color-text)]">{d.district}</td>
+                    <td className="py-2 px-3 text-right text-[var(--color-muted)]">{(d.institutes || 0).toLocaleString()}</td>
+                    <td className="py-2 px-3 text-right text-[var(--color-muted)]">{(d.teachers || 0).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

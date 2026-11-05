@@ -158,7 +158,7 @@ export function InstituteDetail() {
       )}
 
       {tab === 'location' && (
-        <div className="card p-6 md:p-8">
+        <div className="card p-6 md:p-8 space-y-4">
           <div className="h-[400px] rounded-xl overflow-hidden border border-[var(--color-border)]">
             <iframe
               src={`https://www.google.com/maps?q=${encodeURIComponent(inst.upazila + ', ' + inst.district + ', ' + inst.division + ', Bangladesh')}&output=embed`}
@@ -171,7 +171,25 @@ export function InstituteDetail() {
               title="Google Maps"
             />
           </div>
-          <p className="text-xs text-[var(--color-muted)] mt-3">
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(inst.upazila + ', ' + inst.district + ', ' + inst.division + ', Bangladesh')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-100 transition"
+            >
+              📍 Open in Google Maps
+            </a>
+            <a
+              href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${encodeURIComponent(inst.upazila + ', ' + inst.district + ', ' + inst.division + ', Bangladesh')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-100 transition"
+            >
+              📷 Street View
+            </a>
+          </div>
+          <p className="text-xs text-[var(--color-muted)]">
             Location is approximate (based on address). Google Maps provides satellite and street views.
           </p>
         </div>

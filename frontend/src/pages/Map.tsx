@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.heat';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet.markercluster';
@@ -86,6 +87,44 @@ function ClusteredMarkers({ institutes }: { institutes: any[] }) {
   return null;
 }
 
+// Heat map layer
+function HeatmapLayer({ districts }: { districts: { district: string; division: string; count: number }[] }) {
+  const map = useMap();
+  const layerRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!layerRef.current) {
+      layerRef.current = (L as any).heatLayer([], {
+        radius: 40,
+        blur: 25,
+        maxZoom: 10,
+        max: 1.0,
+        gradient: { 0.2: '#10b981', 0.4: '#059669', 0.6: '#047857', 0.8: '#065f46', 1.0: '#022c22' },
+      }).addTo(map);
+    }
+    const layer = layerRef.current;
+    layer.setLatLngs(
+      districts.map((d) => {
+        const coords = districtCoords[normalizeDistrict(d.district)];
+        if (!coords) return null;
+        return [coords[0], coords[1], Math.min(d.count / 5000, 1)];
+      }).filter(Boolean)
+    );
+    return () => {};
+  }, [districts, map]);
+
+  useEffect(() => {
+    return () => {
+      if (layerRef.current) {
+        map.removeLayer(layerRef.current);
+        layerRef.current = null;
+      }
+    };
+  }, [map]);
+
+  return null;
+}
+
 // District aggregation markers
 function DistrictMarkers({ districts }: { districts: { district: string; division: string; count: number }[] }) {
   const map = useMap();
@@ -148,6 +187,7 @@ export function Map() {
   const [search, setSearch] = useState('');
   const [layer, setLayer] = useState<'roadmap' | 'satellite'>('roadmap');
   const [showLegend, setShowLegend] = useState(true);
+  const [showHeatmap, setShowHeatmap] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [mode, setMode] = useState<'districts' | 'institutes'>('districts');
 
@@ -272,6 +312,12 @@ export function Map() {
         >
           {showLegend ? 'Hide' : 'Show'} Legend
         </button>
+        <button
+          onClick={() => setShowHeatmap(!showHeatmap)}
+          className={`px-3 py-2 rounded-lg border text-sm transition ${showHeatmap ? 'bg-red-600 text-white border-red-600' : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+        >
+          🔥 Heat Map
+        </button>
         <span className="text-sm text-[var(--color-muted)] ml-auto">
           {mode === 'districts' ? `${filteredDistricts.length} districts` : `${filteredInstitutes.length} institutes`}
         </span>
@@ -294,7 +340,8 @@ export function Map() {
                   : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'}
                 attribution={layer === 'roadmap' ? '&copy; OpenStreetMap contributors' : 'Tiles &copy; Esri'}
               />
-              {mode === 'districts' && <DistrictMarkers districts={filteredDistricts} />}
+              {mode === 'districts' && showHeatmap && <HeatmapLayer districts={filteredDistricts} />}
+              {mode === 'districts' && !showHeatmap && <DistrictMarkers districts={filteredDistricts} />}
               {mode === 'institutes' && <ClusteredMarkers institutes={filteredInstitutes} />}
             </MapContainer>
             {/* Legend overlay */}

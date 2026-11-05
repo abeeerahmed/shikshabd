@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { institutesApi } from '../api/client';
-import { ArrowLeft, MapPin, Mail, Phone, Building2, Users, Award, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export function Compare() {
   const [params] = useSearchParams();

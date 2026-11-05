@@ -33,6 +33,15 @@ input, select, textarea {
   color: var(--color-text);
 }
 
+/* Dark mode polish - smoother transitions */
+.dark {
+  --color-bg: #09090b;
+  --color-surface: #18181b;
+  --color-text: #fafafa;
+  --color-muted: #a1a1aa;
+  --color-border: #27272a;
+}
+
 body {
   font-family: var(--font-body);
   background: var(--color-bg);
