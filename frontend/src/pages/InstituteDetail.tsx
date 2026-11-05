@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { institutesApi, searchApi } from '../api/client';
-import { ArrowLeft, MapPin, Mail, Building2, Users, Award, BookOpen, Share2, Check, Printer } from 'lucide-react';
+import { ArrowLeft, MapPin, Mail, Building2, Users, Award, BookOpen, Share2, Check, Printer, Phone } from 'lucide-react';
 
 function serviceYears(dateStr: string): string {
   if (!dateStr) return '—';
@@ -117,6 +117,11 @@ export function InstituteDetail() {
             <InfoRow icon={Building2} label="Type" value={inst.institute_type} />
             <InfoRow icon={Users} label="Management" value={inst.management} />
             <InfoRow icon={Mail} label="Email" value={inst.email} />
+            {inst.mobile && <InfoRow icon={Phone} label="Mobile" value={inst.mobile} />}
+            {inst.address && <InfoRow icon={MapPin} label="Address" value={inst.address} />}
+            {inst.geo_status && <InfoRow icon={MapPin} label="Geo Status" value={inst.geo_status} />}
+            {inst.student_type && <InfoRow icon={Users} label="Student Type" value={inst.student_type} />}
+            {inst.affiliation && <InfoRow icon={Award} label="Affiliation" value={inst.affiliation} />}
             <InfoRow icon={Award} label="MPO Status" value={inst.is_mpo} />
             <InfoRow icon={BookOpen} label="Education Level" value={inst.education_level} />
             {inst.total_teacher != null && <InfoRow icon={Users} label="Teachers (Primary)" value={String(inst.total_teacher)} />}
