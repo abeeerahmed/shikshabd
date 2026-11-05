@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { institutesApi, searchApi } from '../api/client';
-import { ArrowLeft, MapPin, Mail, Building2, Users, Award, BookOpen, Share2, Check } from 'lucide-react';
+import { ArrowLeft, MapPin, Mail, Building2, Users, Award, BookOpen, Share2, Check, Printer } from 'lucide-react';
 
 function serviceYears(dateStr: string): string {
   if (!dateStr) return '—';
@@ -80,7 +80,7 @@ export function InstituteDetail() {
               {copied ? <Check size={16} className="text-emerald-600" /> : <Share2 size={16} />}
             </button>
             <button onClick={() => window.print()} className="p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition text-[var(--color-muted)]" title="Print">
-              🖨️
+              <Printer size={16} />
             </button>
             <span className={`text-sm px-3 py-1 rounded-full font-medium ${inst.level === 'Primary' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'}`}>
               {inst.level}
@@ -88,7 +88,7 @@ export function InstituteDetail() {
           </div>
         </div>
 
-        <div className="flex gap-2 mt-6 border-b border-[var(--color-border)]">
+        <div className="flex gap-2 mt-6 border-b border-[var(--color-border)] overflow-x-auto -mx-6 md:mx-0 px-6 md:px-0">
           <button
             onClick={() => setTab('overview')}
             className={`px-4 py-2 font-medium text-sm border-b-2 transition ${tab === 'overview' ? 'border-emerald-700 text-emerald-700' : 'border-transparent text-[var(--color-muted)] hover:text-[var(--color-text)]'}`}
