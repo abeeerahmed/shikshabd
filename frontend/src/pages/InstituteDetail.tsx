@@ -70,19 +70,23 @@ export function InstituteDetail() {
       </Link>
 
       <div className="card p-6 md:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-xl md:text-2xl font-bold text-[var(--color-text)] break-words">{inst.institute_name}</h1>
-            <p className="text-[var(--color-muted)] mt-1 text-sm">ID: {inst.eiin_or_code} · {inst.id_type}</p>
+        <div className="space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="text-lg md:text-2xl font-bold text-[var(--color-text)] leading-tight flex-1 min-w-0">{inst.institute_name}</h1>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button onClick={share} className="p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition text-[var(--color-muted)]" title="Share">
+                {copied ? <Check size={16} className="text-emerald-600" /> : <Share2 size={16} />}
+              </button>
+              <button onClick={() => window.print()} className="p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition text-[var(--color-muted)]" title="Print">
+                <Printer size={16} />
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button onClick={share} className="p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition text-[var(--color-muted)]" title="Share">
-              {copied ? <Check size={16} className="text-emerald-600" /> : <Share2 size={16} />}
-            </button>
-            <button onClick={() => window.print()} className="p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition text-[var(--color-muted)]" title="Print">
-              <Printer size={16} />
-            </button>
-            <span className={`text-sm px-3 py-1 rounded-full font-medium ${inst.level === 'Primary' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'}`}>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-[var(--color-muted)]">ID: {inst.eiin_or_code}</span>
+            <span className="text-xs text-[var(--color-muted)]">·</span>
+            <span className="text-xs text-[var(--color-muted)]">{inst.id_type}</span>
+            <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${inst.level === 'Primary' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'}`}>
               {inst.level}
             </span>
           </div>
