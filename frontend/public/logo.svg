@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="12" fill="#047857"/>
+  <g transform="translate(12, 14)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Graduation cap -->
+    <path d="M20 0 L40 10 L20 20 L0 10 Z" fill="white" stroke="none"/>
+    <path d="M20 0 L40 10 L20 20 L0 10 Z"/>
+    <path d="M6 12 L6 22 Q6 26 20 28 Q34 26 34 22 L34 12"/>
+    <path d="M40 10 L40 22"/>
+    <circle cx="40" cy="24" r="2" fill="white" stroke="none"/>
+  </g>
+</svg>

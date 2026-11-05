@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: shikshabd-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: DB_PATH
+        value: /app/bd_education.db
+    healthCheckPath: /health
+    plan: free
