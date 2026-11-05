@@ -26,6 +26,7 @@ export const statsApi = {
   byLevel: () => api.get('/stats/by-level'),
   topDistricts: () => api.get('/stats/top-districts'),
   teacherDesignations: () => api.get('/stats/teacher-designations'),
+  districts: () => api.get('/stats/districts'),
 };
 
 export const searchApi = {

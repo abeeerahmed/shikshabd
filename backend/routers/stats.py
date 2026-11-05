@@ -62,6 +62,16 @@ def top_districts(limit: int = 10):
     conn.close()
     return [dict(r) for r in rows]
 
+@router.get("/districts")
+@cached(ttl=300)
+def districts_stats():
+    conn = get_conn()
+    rows = conn.execute(
+        "SELECT district, COUNT(*) as institutes, COALESCE(SUM(teacher_count),0) as teachers FROM all_institutes_clean WHERE district IS NOT NULL GROUP BY district ORDER BY institutes DESC"
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
 @router.get("/teacher-designations")
 @cached(ttl=300)
 def teacher_designations(limit: int = 10):
