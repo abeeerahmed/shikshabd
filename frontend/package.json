@@ -25,6 +25,7 @@
     "@tanstack/react-virtual": "^3.14.26",
     "@types/leaflet.markercluster": "^1.5.6",
     "axios": "^1.21.0",
+    "framer-motion": "^14.9.1",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^1.68.0",

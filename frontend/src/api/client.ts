@@ -23,6 +23,8 @@ export const statsApi = {
   byType: () => api.get('/stats/by-type'),
   byDivision: () => api.get('/stats/by-division'),
   byLevel: () => api.get('/stats/by-level'),
+  topDistricts: () => api.get('/stats/top-districts'),
+  teacherDesignations: () => api.get('/stats/teacher-designations'),
 };
 
 export const searchApi = {

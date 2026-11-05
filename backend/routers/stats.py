@@ -50,3 +50,29 @@ def by_level():
     rows = conn.execute("SELECT level, COUNT(*) as count FROM all_institutes_clean GROUP BY level").fetchall()
     conn.close()
     return [{"level": r["level"], "count": r["count"]} for r in rows]
+
+@router.get("/top-districts")
+@cached(ttl=300)
+def top_districts(limit: int = 10):
+    conn = get_conn()
+    rows = conn.execute(
+        "SELECT district, COUNT(*) as count FROM all_institutes_clean WHERE district IS NOT NULL GROUP BY district ORDER BY count DESC LIMIT ?",
+        (limit,),
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+@router.get("/teacher-designations")
+@cached(ttl=300)
+def teacher_designations(limit: int = 10):
+    conn = get_conn()
+    rows = conn.execute(
+        "SELECT designation, COUNT(*) as count FROM teachers WHERE designation IS NOT NULL GROUP BY designation ORDER BY count DESC LIMIT ?",
+        (limit,),
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+    conn = get_conn()
+    rows = conn.execute("SELECT level, COUNT(*) as count FROM all_institutes_clean GROUP BY level").fetchall()
+    conn.close()
+    return [{"level": r["level"], "count": r["count"]} for r in rows]

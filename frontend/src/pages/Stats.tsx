@@ -1,5 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
 import { statsApi } from '../api/client';
+import { useState, useEffect } from 'react';
+
+function CountUp({ value, duration = 1200 }: { value: number; duration?: number }) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    let start = 0;
+    const end = value;
+    const step = end / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= end) { setDisplay(end); clearInterval(timer); }
+      else setDisplay(Math.floor(start));
+    }, 16);
+    return () => clearInterval(timer);
+  }, [value, duration]);
+  return <>{display.toLocaleString()}</>;
+}
 
 const COLORS = ['#047857', '#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5', '#065f46', '#064e3b', '#022c22'];
 
@@ -88,6 +105,14 @@ export function Stats() {
     queryKey: ['stats', 'by-level'],
     queryFn: () => statsApi.byLevel().then((r) => r.data),
   });
+  const { data: topDistricts = [] } = useQuery({
+    queryKey: ['stats', 'top-districts'],
+    queryFn: () => statsApi.topDistricts().then((r) => r.data),
+  });
+  const { data: teacherDesignations = [] } = useQuery({
+    queryKey: ['stats', 'teacher-designations'],
+    queryFn: () => statsApi.teacherDesignations().then((r) => r.data),
+  });
 
   return (
     <div className="space-y-8">
@@ -112,7 +137,7 @@ export function Stats() {
             { label: 'Teachers', value: overview.teachers_scraped },
           ].map(({ label, value }) => (
             <div key={label} className="card p-5 text-center">
-              <p className="text-2xl md:text-3xl font-bold text-emerald-700 dark:text-emerald-400">{value.toLocaleString()}</p>
+              <p className="text-2xl md:text-3xl font-bold text-emerald-700 dark:text-emerald-400"><CountUp value={value} /></p>
               <p className="text-sm text-[var(--color-muted)] mt-1">{label}</p>
             </div>
           ))
@@ -134,6 +159,17 @@ export function Stats() {
       <div className="card p-6">
         <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">By Division</h2>
         {loading ? <ChartSkeleton /> : <HBarChart data={byDivision} labelKey="division" color="#2563eb" />}
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="card p-6">
+          <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Top Districts by Institutes</h2>
+          {loading ? <ChartSkeleton /> : <HBarChart data={topDistricts} labelKey="district" color="#7c3aed" />}
+        </div>
+        <div className="card p-6">
+          <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Top Teacher Designations</h2>
+          {loading ? <ChartSkeleton /> : <HBarChart data={teacherDesignations} labelKey="designation" color="#d97706" />}
+        </div>
       </div>
     </div>
   );

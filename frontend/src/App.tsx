@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, NavLink, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { lazy, Suspense, useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Network } from '@capacitor/network';
 import { BackToTop } from './components/BackToTop';
 import { GraduationCap, Users, BarChart3, Search as SearchIcon, Home as HomeIcon, Menu, X, Moon, Sun } from 'lucide-react';
@@ -148,6 +149,35 @@ function NetworkBanner() {
   );
 }
 
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.2 }}
+      >
+        <Suspense fallback={<Loading />}>
+          <Routes location={location}>
+            <Route path="/" element={<Home />} />
+            <Route path="/institutes" element={<Institutes />} />
+            <Route path="/institutes/:eiin" element={<InstituteDetail />} />
+            <Route path="/teachers" element={<Teachers />} />
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/compare" element={<Compare />} />
+            <Route path="/map" element={<Map />} />
+          </Routes>
+        </Suspense>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -155,19 +185,7 @@ export default function App() {
         <NetworkBanner />
         <Navbar />
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <Suspense fallback={<Loading />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/institutes" element={<Institutes />} />
-              <Route path="/institutes/:eiin" element={<InstituteDetail />} />
-              <Route path="/teachers" element={<Teachers />} />
-              <Route path="/stats" element={<Stats />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/favorites" element={<Favorites />} />
-              <Route path="/compare" element={<Compare />} />
-              <Route path="/map" element={<Map />} />
-            </Routes>
-          </Suspense>
+          <AnimatedRoutes />
         </main>
         <BackToTop />
       </div>
