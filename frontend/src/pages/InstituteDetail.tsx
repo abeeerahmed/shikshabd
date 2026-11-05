@@ -70,12 +70,12 @@ export function InstituteDetail() {
       </Link>
 
       <div className="card p-6 md:p-8">
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl md:text-2xl font-bold text-[var(--color-text)]">{inst.institute_name}</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-[var(--color-text)] break-words">{inst.institute_name}</h1>
             <p className="text-[var(--color-muted)] mt-1 text-sm">ID: {inst.eiin_or_code} · {inst.id_type}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button onClick={share} className="p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition text-[var(--color-muted)]" title="Share">
               {copied ? <Check size={16} className="text-emerald-600" /> : <Share2 size={16} />}
             </button>
