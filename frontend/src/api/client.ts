@@ -34,3 +34,13 @@ export const searchApi = {
   suggest: (q: string) => api.get('/search/suggest', { params: { q } }),
   similar: (eiin: string) => api.get(`/search/similar/${eiin}`),
 };
+
+export const reviewsApi = {
+  get: (eiin: string, token?: string) => api.get(`/reviews/${eiin}`, { params: token ? { token } : {} }),
+  create: (eiin: string, data: any, token: string) => api.post(`/reviews/${eiin}`, data, { params: { token } }),
+  update: (eiin: string, reviewId: number, data: any, token: string) => api.put(`/reviews/${eiin}/${reviewId}`, data, { params: { token } }),
+  delete: (eiin: string, reviewId: number, token: string) => api.delete(`/reviews/${eiin}/${reviewId}`, { params: { token } }),
+  vote: (eiin: string, reviewId: number, data: any, token: string) => api.post(`/reviews/${eiin}/${reviewId}/vote`, data, { params: { token } }),
+  toggleLike: (eiin: string, token: string) => api.post(`/reviews/${eiin}/like`, {}, { params: { token } }),
+  rankings: (params?: any) => api.get('/reviews/rankings/top', { params }),
+};

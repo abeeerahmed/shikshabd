@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { institutesApi, searchApi } from '../api/client';
-import { ArrowLeft, MapPin, Mail, Building2, Users, Award, BookOpen, Share2, Check, Printer, Phone } from 'lucide-react';
+import { ArrowLeft, MapPin, Mail, Building2, Users, Award, BookOpen, Share2, Check, Printer, Phone, Star } from 'lucide-react';
+import { ReviewSection } from '../components/ReviewSection';
 
 function serviceYears(dateStr: string): string {
   if (!dateStr) return '—';
@@ -17,7 +18,7 @@ export function InstituteDetail() {
   const { eiin } = useParams();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<'overview' | 'teachers' | 'location'>('overview');
+  const [tab, setTab] = useState<'overview' | 'teachers' | 'location' | 'reviews'>('overview');
   const [copied, setCopied] = useState(false);
   const [teacherSearch, setTeacherSearch] = useState('');
   const [similar, setSimilar] = useState<any[]>([]);
@@ -111,6 +112,12 @@ export function InstituteDetail() {
           >
             <MapPin size={16} /> Location
           </button>
+          <button
+            onClick={() => setTab('reviews')}
+            className={`px-4 py-2 font-medium text-sm border-b-2 transition flex items-center gap-2 ${tab === 'reviews' ? 'border-emerald-700 text-emerald-700' : 'border-transparent text-[var(--color-muted)] hover:text-[var(--color-text)]'}`}
+          >
+            <Star size={16} /> Reviews
+          </button>
         </div>
       </div>
 
@@ -154,6 +161,12 @@ export function InstituteDetail() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {tab === 'reviews' && (
+        <div className="card p-6 md:p-8">
+          <ReviewSection eiin={inst.eiin_or_code} />
         </div>
       )}
 

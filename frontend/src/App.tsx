@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { lazy, Suspense, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Network } from '@capacitor/network';
 import { BackToTop } from './components/BackToTop';
-import { GraduationCap, Users, BarChart3, Search as SearchIcon, Home as HomeIcon, Menu, X, Moon, Sun } from 'lucide-react';
+import { GraduationCap, Users, BarChart3, Search as SearchIcon, Home as HomeIcon, Menu, X, Moon, Sun, Star } from 'lucide-react';
 
 const Home = lazy(() => import('./pages/Home').then((m) => ({ default: m.Home })));
 const Institutes = lazy(() => import('./pages/Institutes').then((m) => ({ default: m.Institutes })));
@@ -14,11 +15,15 @@ const Search = lazy(() => import('./pages/Search').then((m) => ({ default: m.Sea
 const Favorites = lazy(() => import('./pages/Favorites').then((m) => ({ default: m.Favorites })));
 const Compare = lazy(() => import('./pages/Compare').then((m) => ({ default: m.Compare })));
 const Map = lazy(() => import('./pages/Map').then((m) => ({ default: m.Map })));
+const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })));
+const AuthCallback = lazy(() => import('./pages/AuthCallback').then((m) => ({ default: m.AuthCallback })));
+const Rankings = lazy(() => import('./pages/Rankings').then((m) => ({ default: m.Rankings })));
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark');
   const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
@@ -43,6 +48,7 @@ function Navbar() {
     { to: '/stats', label: 'Stats', icon: BarChart3 },
     { to: '/search', label: 'Search', icon: SearchIcon },
     { to: '/map', label: 'Map', icon: SearchIcon },
+    { to: '/rankings', label: 'Rankings', icon: Star },
   ];
 
   return (
@@ -80,9 +86,24 @@ function Navbar() {
             >
               ♥
             </NavLink>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2 ml-2">
+                {user?.avatar && <img src={user.avatar} alt="" className="w-7 h-7 rounded-full" />}
+                <button onClick={logout} className="text-xs text-[var(--color-muted)] hover:text-red-500 transition-colors">
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <NavLink
+                to="/login"
+                className="ml-2 px-3 py-1.5 rounded-md text-sm font-medium text-[var(--color-muted)] hover:text-emerald-700 hover:bg-[var(--color-border)] transition-colors"
+              >
+                Sign In
+              </NavLink>
+            )}
             <button
               onClick={() => setDark(!dark)}
-              className="ml-2 p-1.5 rounded-md text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors"
+              className="p-1.5 rounded-md text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-border)] transition-colors"
               aria-label="Toggle dark mode"
             >
               {dark ? <Sun size={16} /> : <Moon size={16} />}
@@ -119,6 +140,14 @@ function Navbar() {
             <NavLink to="/compare" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-[var(--color-muted)]">
               Compare
             </NavLink>
+            <NavLink to="/rankings" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-[var(--color-muted)]">
+              Rankings
+            </NavLink>
+            {!isAuthenticated && (
+              <NavLink to="/login" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-emerald-700">
+                Sign In
+              </NavLink>
+            )}
           </div>
         )}
       </div>
@@ -171,6 +200,9 @@ function AnimatedRoutes() {
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/compare" element={<Compare />} />
             <Route path="/map" element={<Map />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/rankings" element={<Rankings />} />
           </Routes>
         </Suspense>
       </motion.div>
@@ -181,14 +213,16 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen">
-        <NetworkBanner />
-        <Navbar />
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <AnimatedRoutes />
-        </main>
-        <BackToTop />
-      </div>
+      <AuthProvider>
+        <div className="min-h-screen">
+          <NetworkBanner />
+          <Navbar />
+          <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+            <AnimatedRoutes />
+          </main>
+          <BackToTop />
+        </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import institutes, teachers, stats, search
+from routers import institutes, teachers, stats, search, auth, reviews
 
 app = FastAPI(
     title="Bangladesh Educational Institutes API",
@@ -20,6 +20,8 @@ app.include_router(institutes.router, prefix="/api/institutes", tags=["institute
 app.include_router(teachers.router, prefix="/api/teachers", tags=["teachers"])
 app.include_router(stats.router, prefix="/api/stats", tags=["stats"])
 app.include_router(search.router, prefix="/api/search", tags=["search"])
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(reviews.router, prefix="/api/reviews", tags=["reviews"])
 
 @app.get("/")
 def root():
