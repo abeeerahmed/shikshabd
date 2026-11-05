@@ -1,12 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { statsApi } from '../api/client';
-import { GraduationCap, Users, School, BookOpen, ArrowRight, MapPin } from 'lucide-react';
+import { statsApi, institutesApi } from '../api/client';
+import { GraduationCap, Users, School, BookOpen, ArrowRight, MapPin, Star } from 'lucide-react';
 
 export function Home() {
   const { data: stats, isLoading: loading } = useQuery({
     queryKey: ['stats', 'overview'],
     queryFn: () => statsApi.overview().then((r) => r.data),
+  });
+  const { data: featured } = useQuery({
+    queryKey: ['institute', 'random'],
+    queryFn: () => institutesApi.random().then((r) => r.data),
   });
 
   const cards = [
@@ -29,7 +33,7 @@ export function Home() {
             <span className="text-emerald-700 dark:text-emerald-400">every teacher.</span>
           </h1>
           <p className="text-base md:text-lg text-[var(--color-muted)] max-w-xl mb-8 leading-relaxed">
-            Explore 101,797 institutes across Bangladesh — with teacher names, designations, joining dates, MPO status, and contact details.
+            Explore {stats?.total_institutes?.toLocaleString() ?? '101,847'} institutes across Bangladesh — with teacher names, designations, joining dates, MPO status, and contact details.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link to="/institutes" className="inline-flex items-center gap-2 bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-lg hover:bg-emerald-800 transition-colors text-sm">
@@ -44,6 +48,41 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* Featured Institute */}
+      {featured && featured.institute_name && (
+        <section>
+          <div className="card p-6 md:p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-900/20 rounded-bl-full opacity-50" />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <Star size={16} className="text-amber-500" />
+                <span className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wider">Featured Institute</span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-bold text-[var(--color-text)] mb-2">{featured.institute_name}</h2>
+              <p className="text-sm text-[var(--color-muted)] mb-4">
+                {featured.district}, {featured.division} · {featured.institute_type} · {featured.level}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {featured.is_mpo && featured.is_mpo !== 'NOT_APPLICABLE' && (
+                  <span className={`text-xs px-2.5 py-1 rounded-full ${featured.is_mpo === 'YES' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                    MPO: {featured.is_mpo}
+                  </span>
+                )}
+                {(featured.teacher_count ?? 0) > 0 && (
+                  <span className="text-xs px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">{featured.teacher_count} teachers</span>
+                )}
+                {featured.mobile && (
+                  <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">📞 {featured.mobile}</span>
+                )}
+              </div>
+              <Link to={`/institutes/${featured.eiin_or_code}`} className="inline-flex items-center gap-2 bg-emerald-700 text-white font-medium px-4 py-2 rounded-lg hover:bg-emerald-800 transition-colors text-sm">
+                View Details <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Stats */}
       <section>

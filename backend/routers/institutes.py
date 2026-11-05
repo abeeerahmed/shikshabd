@@ -233,6 +233,14 @@ def by_district(
     return result
 
 
+@router.get("/random")
+def random_institute():
+    conn = get_conn()
+    cur = conn.cursor()
+    row = cur.execute("SELECT * FROM all_institutes_clean ORDER BY RANDOM() LIMIT 1").fetchone()
+    conn.close()
+    return dict(row) if row else {}
+
 @router.get("/types")
 @cached(ttl=3600)
 def types():

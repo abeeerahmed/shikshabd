@@ -11,6 +11,7 @@ export const institutesApi = {
   types: () => api.get('/institutes/types'),
   mapData: (params: Record<string, any>) => api.get('/institutes/map-data', { params }),
   byDistrict: (params: Record<string, any>) => api.get('/institutes/by-district', { params }),
+  random: () => api.get('/institutes/random'),
 };
 
 export const teachersApi = {
