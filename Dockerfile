@@ -6,8 +6,16 @@ WORKDIR /app
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend code and database
+# Copy backend code
 COPY backend/ .
+
+# Download database if DB_DOWNLOAD_URL is provided
+# Otherwise, bd_education.db must be present in backend/ (local dev)
+ARG DB_DOWNLOAD_URL=""
+RUN if [ -n "$DB_DOWNLOAD_URL" ]; then \
+        echo "Downloading database from $DB_DOWNLOAD_URL..."; \
+        python -c "import urllib.request; urllib.request.urlretrieve('$DB_DOWNLOAD_URL', '/app/bd_education.db')"; \
+    fi
 
 ENV DB_PATH=/app/bd_education.db
 

@@ -7,5 +7,7 @@ services:
     envVars:
       - key: DB_PATH
         value: /app/bd_education.db
+      - key: DB_DOWNLOAD_URL
+        value: ""   # Set this to a URL hosting bd_education.db (e.g., Google Drive direct link)
     healthCheckPath: /health
     plan: free
