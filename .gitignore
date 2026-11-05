@@ -27,3 +27,11 @@ venv/
 
 # Temp
 *.tmp
+
+# Android Studio
+.idea/
+*.iml
+
+# Signing keys (keep local only)
+*.keystore
+*.jks
